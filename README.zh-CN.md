@@ -1,5 +1,7 @@
 # CarWith 网页桥接实验版
 
+**项目已迁移到 [car-mirror-standalone/carwith-browser](https://github.com/wakin0627/car-mirror-standalone/tree/main/carwith-browser)。** 新测试 APK 在[原项目仓库的 Releases](https://github.com/wakin0627/car-mirror-standalone/releases) 下载。
+
 本分支增加“小米 CarWith 原生画面 → 同一 Wi-Fi 上的车机浏览器”模式。使用方法、验证边界与来源说明见 [BROWSER_BRIDGE.md](BROWSER_BRIDGE.md)。以下保留上游 mcarplay 文档。
 
 # mcarplay

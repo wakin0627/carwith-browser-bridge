@@ -1,5 +1,7 @@
 # CarWith browser bridge prototype
 
+**Moved to [car-mirror-standalone/carwith-browser](https://github.com/wakin0627/car-mirror-standalone/tree/main/carwith-browser).** New test APKs are published in [that repository's Releases](https://github.com/wakin0627/car-mirror-standalone/releases).
+
 This experimental fork adds a Wi-Fi browser receiver for Xiaomi CarWith. See [BROWSER_BRIDGE.md](BROWSER_BRIDGE.md) for the new mode, its limitations and credits. The upstream mcarplay documentation follows below.
 
 # mcarplay
