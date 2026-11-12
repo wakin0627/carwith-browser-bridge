@@ -31,6 +31,8 @@ final class MirrorWebServer {
     private final Context context;
     private final Listener listener;
     private final String token;
+    private final String pin;
+    private final Map<String, long[]> failedPins = new ConcurrentHashMap<>();
     private final Set<Client> clients = ConcurrentHashMap.newKeySet();
     private SSLServerSocket server;
     private ServerSocket diagnosticServer;
@@ -39,8 +41,8 @@ final class MirrorWebServer {
     private volatile byte[] configPacket;
     private volatile byte[] lastKeyframe;
 
-    MirrorWebServer(Context context, Listener listener, String token) {
-        this.context = context; this.listener = listener; this.token = token;
+    MirrorWebServer(Context context, Listener listener, String token, String pin) {
+        this.context = context; this.listener = listener; this.token = token; this.pin = pin;
     }
 
     void start() throws Exception {
@@ -122,6 +124,22 @@ final class MirrorWebServer {
                 String target = first.split(" ")[1];
                 String[] parts = target.split("\\?", 2);
                 String path = parts[0];
+                if ("/".equals(path) && (parts.length == 1 || parts[1].startsWith("pin="))) {
+                    if (parts.length == 1) {
+                        servePair(out, "");
+                    } else if (pinRateLimited(socket.getInetAddress().getHostAddress(), false)) {
+                        servePair(out, "尝试次数过多，请稍后再试");
+                    } else if (("pin=" + pin).equals(parts[1])) {
+                        out.write(("HTTP/1.1 302 Found\r\nLocation: /?key=" + token
+                                + "\r\nCache-Control: no-store\r\nContent-Length: 0\r\nConnection: close\r\n\r\n")
+                                .getBytes(StandardCharsets.US_ASCII));
+                    } else {
+                        String remote = socket.getInetAddress().getHostAddress();
+                        pinRateLimited(remote, true);
+                        servePair(out, "配对码不正确，请重试");
+                    }
+                    out.flush(); socket.close(); return;
+                }
                 if (parts.length != 2 || !("key=" + token).equals(parts[1])) {
                     out.write("HTTP/1.1 403 Forbidden\r\nContent-Length: 0\r\nConnection: close\r\n\r\n"
                             .getBytes(StandardCharsets.US_ASCII));
@@ -168,6 +186,26 @@ final class MirrorWebServer {
                 try { socket.close(); } catch (Exception ignored) {}
             }
         }, "car-mirror-http").start();
+    }
+
+    private boolean pinRateLimited(String remote, boolean failedAttempt) {
+        synchronized (failedPins) {
+            long now = System.currentTimeMillis();
+            long[] count = failedPins.computeIfAbsent(remote, key -> new long[]{now, 0});
+            if (now - count[0] > 60_000) { count[0] = now; count[1] = 0; }
+            if (failedAttempt) count[1]++;
+            return count[1] >= 5;
+        }
+    }
+
+    private void servePair(OutputStream out, String error) throws Exception {
+        String html = new String(readAsset("browser-pair.html"), StandardCharsets.UTF_8)
+                .replace("{{ERROR}}", error);
+        byte[] body = html.getBytes(StandardCharsets.UTF_8);
+        String response = "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\nCache-Control: no-store\r\nContent-Length: "
+                + body.length + "\r\nConnection: close\r\n\r\n";
+        out.write(response.getBytes(StandardCharsets.US_ASCII));
+        out.write(body);
     }
 
     private boolean hasVideoClient() {

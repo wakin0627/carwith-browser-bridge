@@ -28,6 +28,7 @@ class BrowserBridgeService :
         const val ACTION_STOP = "com.mcarplay.app.browser.STOP"
 
         val token: String = ByteArray(16).also(SecureRandom()::nextBytes).joinToString("") { "%02x".format(it.toInt() and 255) }
+        val pin: String = "%06d".format(SecureRandom().nextInt(1_000_000))
 
         @JvmField
         @Volatile
@@ -93,7 +94,7 @@ class BrowserBridgeService :
         height: Int,
     ) {
         try {
-            val server = MirrorWebServer(this, this, token)
+            val server = MirrorWebServer(this, this, token, pin)
             server.start()
             if (stopping) {
                 server.stop()

@@ -24,6 +24,7 @@ class BrowserBridgeActivity : Activity() {
     private val handler = Handler(Looper.getMainLooper())
     private lateinit var status: TextView
     private lateinit var address: TextView
+    private lateinit var pin: TextView
     private lateinit var quality: Spinner
     private lateinit var ratio: Spinner
     private val refresh =
@@ -47,6 +48,7 @@ class BrowserBridgeActivity : Activity() {
         root.addView(label("小米 13 连接车机 Wi-Fi 后，点连接；车机浏览器打开下方网址。", 16, Color.DKGRAY))
         status = label("未连接", 19, Color.rgb(38, 90, 160)).also(root::addView)
         address = label("", 18, Color.BLACK).also(root::addView)
+        pin = label("配对码：${BrowserBridgeService.pin}", 20, Color.rgb(38, 90, 160)).also(root::addView)
         root.addView(label("画质", 16, Color.DKGRAY))
         quality = spinner("低延迟：宽 1280", "标准：宽 1920").also(root::addView)
         root.addView(label("车机比例", 16, Color.DKGRAY))
@@ -71,7 +73,7 @@ class BrowserBridgeActivity : Activity() {
                     .setPrimaryClip(ClipData.newPlainText("CarWith 网页桥接", url))
             }
         }
-        root.addView(label("浏览器点“开启车机声音”。车机画面由 CarWith 生成，手机屏幕可独立使用。首次打开本地 HTTPS 证书可能需要在车机确认。", 14, Color.GRAY))
+        root.addView(label("车机浏览器打开网址，输入上方六位配对码，再点“开启车机声音”。车机画面由 CarWith 生成，手机屏幕可独立使用。首次打开本地 HTTPS 证书可能需要在车机确认。", 14, Color.GRAY))
         setContentView(ScrollView(this).apply { addView(root) })
     }
 
@@ -95,7 +97,7 @@ class BrowserBridgeActivity : Activity() {
                 while (addresses.hasMoreElements()) {
                     val ip = addresses.nextElement()
                     if (ip is Inet4Address && !ip.isLoopbackAddress) {
-                        return "https://${ip.hostAddress}:8443/?key=${BrowserBridgeService.token}"
+                        return "https://${ip.hostAddress}:8443/"
                     }
                 }
             }
