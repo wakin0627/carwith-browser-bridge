@@ -58,7 +58,7 @@
         android:allowBackup="false"
         android:icon="@mipmap/ic_launcher"
         android:roundIcon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="CarWith 网页桥接"
         android:localeConfig="@xml/locales_config"
         android:supportsRtl="true"
         android:theme="@style/Theme.CarPlaySender">
@@ -72,11 +72,21 @@
             android:configChanges="orientation|screenSize|screenLayout|smallestScreenSize|keyboardHidden"
             android:exported="true"
             android:launchMode="singleTask">
+        </activity>
+
+        <activity
+            android:name=".browser.BrowserBridgeActivity"
+            android:label="CarWith 网页桥接"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service
+            android:name=".browser.BrowserBridgeService"
+            android:exported="false"
+            android:foregroundServiceType="connectedDevice" />
 
         <activity
             android:name=".update.UpdateActivity"

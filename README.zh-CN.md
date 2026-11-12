@@ -1,3 +1,7 @@
+# CarWith 网页桥接实验版
+
+本分支增加“小米 CarWith 原生画面 → 同一 Wi-Fi 上的车机浏览器”模式。使用方法、验证边界与来源说明见 [BROWSER_BRIDGE.md](BROWSER_BRIDGE.md)。以下保留上游 mcarplay 文档。
+
 # mcarplay
 
 <img src="docs/branding/mcarplay-icon.png" width="96" height="96" alt="mcarplay 应用图标">

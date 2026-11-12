@@ -1,3 +1,7 @@
+# CarWith browser bridge prototype
+
+This experimental fork adds a Wi-Fi browser receiver for Xiaomi CarWith. See [BROWSER_BRIDGE.md](BROWSER_BRIDGE.md) for the new mode, its limitations and credits. The upstream mcarplay documentation follows below.
+
 # mcarplay
 
 <img src="docs/branding/mcarplay-icon.png" width="96" height="96" alt="mcarplay app icon">

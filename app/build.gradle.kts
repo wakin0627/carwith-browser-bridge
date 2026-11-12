@@ -15,7 +15,7 @@ plugins {
  * Optional signed build suffix: -Pmcarplay.buildNumber=N.
  * Tagged releases use the base version; update it before publishing a new tag.
  */
-val appVersionName = "0.1.6"
+val appVersionName = "0.1.0"
 // 可覆盖安装的 remote 诊断包；兼容第一版诊断包的构建参数。
 val diagnosticsBuild =
     providers
@@ -115,7 +115,7 @@ android {
     buildToolsVersion = "35.0.0"
 
     defaultConfig {
-        applicationId = "com.mcarplay.app"
+        applicationId = "com.niofirefly.carwithbrowser"
         minSdk = 31
         targetSdk = 34
         versionCode = effectiveVersionCode
